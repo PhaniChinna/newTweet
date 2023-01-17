@@ -27,11 +27,12 @@ initializeDbServer();
 const validPassword = (password) => {
   return password.length > 6;
 };
+
 const authToken = (request, response, next) => {
   let jwtToken;
-  const authHeader = request.header["authorization"];
+  const authHeader = request.header["Authorization"];
   if (authHeader !== undefined) {
-    jwtToken = authHeader.split(" ")[1];
+    jwtToken = authHeader.split("")[1];
   }
   if (jwtToken === undefined) {
     response.status(401);
@@ -93,7 +94,7 @@ app.post("/login/", async (request, response) => {
 });
 
 //API 3
-app.get("/user/tweets/feed/", async (request, response) => {
+app.get("/user/tweets/feed/", authToken, async (request, response) => {
   const userTweet = `
         SELECT 
             user.username , tweet.tweet , tweet.date_time AS dateTime
@@ -113,7 +114,7 @@ app.get("/user/tweets/feed/", async (request, response) => {
 });
 
 //API 4
-app.get("/user/following/", async (request, response) => {
+app.get("/user/following/", authToken, async (request, response) => {
   const userFollowing = `
         SELECT 
            user.name 
@@ -126,7 +127,7 @@ app.get("/user/following/", async (request, response) => {
 });
 
 //API 5
-app.get("/user/followers/", async (request, response) => {
+app.get("/user/followers/", authToken, async (request, response) => {
   const followerUser = `
         SELECT 
           user.name 
@@ -141,7 +142,7 @@ app.get("/user/followers/", async (request, response) => {
 });
 
 //API 6
-app.get("/tweets/:tweetId/", async (request, response) => {
+app.get("/tweets/:tweetId/", authToken, async (request, response) => {
   const { tweetId } = request.params;
   const selectRequest = `
         SELECT 
@@ -164,7 +165,7 @@ app.get("/tweets/:tweetId/", async (request, response) => {
 });
 
 //API 7
-app.get("/tweets/:tweetId/likes/", async (request, response) => {
+app.get("/tweets/:tweetId/likes/", authToken, async (request, response) => {
   const { tweetId } = request.params;
   const SelectQuery = `
         SELECT 
@@ -194,7 +195,7 @@ app.get("/tweets/:tweetId/likes/", async (request, response) => {
 });
 
 //API 8
-app.get("/tweets/:tweetId/replies/", async (request, response) => {
+app.get("/tweets/:tweetId/replies/", authToken, async (request, response) => {
   const { tweetId } = request.params;
   const selectQuery = `
         SELECT 
@@ -224,7 +225,7 @@ app.get("/tweets/:tweetId/replies/", async (request, response) => {
 });
 
 //API 9
-app.get("/user/tweets/", async (request, response) => {
+app.get("/user/tweets/", authToken, async (request, response) => {
   const SelectTweets = `
        SELECT   
           tweet.tweet , tweet.date_time AS dateTime , like.user_id AS like , reply.tweet_id AS reply
@@ -242,7 +243,7 @@ app.get("/user/tweets/", async (request, response) => {
 
 //API 10
 
-app.post("/user/tweets/", async (request, response) => {
+app.post("/user/tweets/", authToken, async (request, response) => {
   const { tweet } = request.body;
   const selectTweetQuery = `
        INSERT INTO 
@@ -255,7 +256,7 @@ app.post("/user/tweets/", async (request, response) => {
 
 //API 11
 
-app.delete("/tweets/:tweetId/", async (request, response) => {
+app.delete("/tweets/:tweetId/", authToken, async (request, response) => {
   const { tweetId } = request.params;
   const deleteQuery = `
         SELECT 
